@@ -79,6 +79,32 @@ function openUpdateModal(ev) {
   ).childNodes[4].innerHTML;
 }
 
+function onUpdate(ev) {
+  ev.preventDefault();
+
+  let data = {
+    manufacturer: String(document.getElementById("updManufacturer").value),
+    processor: String(document.getElementById("updProcessor").value),
+    hardDiskSize: String(document.getElementById("updHardDisk").value),
+    numOfProcessorCores: String(document.getElementById("updNumOfCores").value)
+  };
+
+  fetch("http://localhost:2403/computers/" + ev.target.value, {
+    method: "PUT",
+    body: JSON.stringify(data),
+    headers: {
+      "Content-Type": "application/json"
+    }
+  })
+    .then(res => res.json())
+    .then(res => console.log("Success", JSON.stringify(res)))
+    .catch(err => console.error("Error:", err));
+
+  onRead();
+  $("#updateModal").modal("hide");
+  location.reload();
+}
+
 function onRead() {
   fetch("http://localhost:2403/computers", {
     headers: {
@@ -91,7 +117,7 @@ function onRead() {
     .then(computer => {
       var tbody = document.getElementById("tbody");
       tbody.innerHTML = "";
-      computer.map(function(nthComp) {
+      computer.map(function (nthComp) {
         tbody.appendChild(parseCompToTableRow(nthComp));
       });
 
@@ -102,9 +128,9 @@ function onRead() {
     .catch(err => console.error("Error:", err));
 }
 
-(function() {
+(function () {
   document.getElementById("addComp").addEventListener("click", onCreate);
-  //document.getElementById("updComp").addEventListener("click", onUpdate);
+  document.getElementById("updComp").addEventListener("click", onUpdate);
   document.getElementById("refresh").addEventListener("click", onRead);
   onRead();
 })();
