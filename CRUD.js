@@ -53,7 +53,7 @@ function parseCompToTableRow(Comp) {
   deleteBtn.id = id.innerHTML;
   deleteBtn.className = "btn";
   deleteBtn.innerHTML = "<i class='fa fa-trash '></i>";
-  //deleteBtn.addEventListener("click", onDelete);
+  deleteBtn.addEventListener("click", onDelete);
   deleteTd.appendChild(deleteBtn);
   row.appendChild(deleteTd);
 
@@ -126,6 +126,21 @@ function onRead() {
       tbody.id = "tbody";
     })
     .catch(err => console.error("Error:", err));
+}
+
+function onDelete(ev) {
+  ev.preventDefault();
+  let compID = ev.target.closest("button").id;
+
+  fetch("http://localhost:2403/computers/" + compID, {
+    method: "DELETE"
+  })
+    .then(res => res.json())
+    .then(res => console.log("Success", JSON.stringify(res)))
+    .catch(err => console.error("Error:", err));
+
+  onRead();
+  location.reload();
 }
 
 (function () {
